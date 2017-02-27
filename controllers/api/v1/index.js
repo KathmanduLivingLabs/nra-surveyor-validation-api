@@ -14,17 +14,12 @@ module.exports = (router) =>{
 
 		console.log(req.query)
 
-		req.cdata = {
-			status : 200,
-			message : 'Done Successfully !'
-		};
+		res.status(200).json({message:"FIne !"})
 
 		// var numbers = [ 9841834495 ];
 
 		// smsFlier.send(numbers,'For login');
 
 
-	},
-	mw.respond,
-	mw.error)
+	})
 }

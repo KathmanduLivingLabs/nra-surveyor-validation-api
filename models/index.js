@@ -4,13 +4,16 @@ var fs        = require("fs");
 var path      = require("path");
 var config = require ('../config');
 var Sequelize = require('sequelize');
-// var sequelize = new Sequelize(config.db.database,config.db.username,config.db.password,{
-//     dialect : config.db.dialect
-// });
 
-var sequelize =  new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres'
+var sequelize = new Sequelize(config.db.database,config.db.username,config.db.password,{
+    dialect : config.db.dialect
 });
+
+// var sequelize =  new Sequelize(process.env.DATABASE_URL, {
+//     dialect: 'postgres'
+// }); // for heroku deployment 
+
+
 var db        = {};
 
 fs

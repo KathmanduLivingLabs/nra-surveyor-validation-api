@@ -66,11 +66,15 @@ app.use(function(err, req, res, next) {
 
 var port = 5678;
 
+var models = require("./models");
 
-var listener =  app.listen(process.env.PORT || port,function(){
-    console.log('API server running at port ' +  listener.address().port)
+
+models.sequelize.sync().then(function(){
+  var listener =  app.listen(process.env.PORT || port,function(){
+      console.log('API server running at port ' +  listener.address().port)
+  })
+
 })
-
 
 
 module.exports = app;

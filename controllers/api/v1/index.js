@@ -1,4 +1,5 @@
 var smsFlier = require('../../../libs/smsflier');
+var mw = require('../../../libs/middleware');
 
 module.exports = (router) =>{
 
@@ -13,10 +14,17 @@ module.exports = (router) =>{
 
 		console.log(req.query)
 
+		req.cdata = {
+			status : 200,
+			message : 'Done Successfully !'
+		};
+
 		// var numbers = [ 9841834495 ];
 
 		// smsFlier.send(numbers,'For login');
 
 
-	})
+	},
+	mw.respond,
+	mw.error)
 }

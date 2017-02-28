@@ -55,18 +55,17 @@ module.exports = (router) => {
 							// console.log('BODY',responseona)
 							if(err) {
 								res.status(200).send("The user could not be validated !");
-							}
+							}else{
 
-							if (responseona && responseona.body && responseona.body.id) {
-								console.log('FINNEE',responseona.body)
 								req.surveyor.surveyorID = responseona.body.id;
 								req.surveyor.createdPassword = createdPassword;
 								req.surveyor.username = userName;
 
 								res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword );
-							}else{
-								res.status(200).send("The user could not be validated !");
+
 							}
+
+							
 
 							
 

@@ -69,7 +69,7 @@ module.exports = (router) => {
 									req.surveyorInfo.createdPassword = createdPassword;
 									req.surveyorInfo.username = userName;
 
-									// console.log('MAATHI',req.surveyor)
+									console.log('MAATHI',req.surveyorInfo)
 
 									var form = {
 										role: 'dataentry',

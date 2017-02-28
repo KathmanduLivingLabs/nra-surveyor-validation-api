@@ -49,7 +49,7 @@ module.exports = (router) => {
 
 						// console.log('YOYO',userForm);
 
-						request.post('https://api.ona.io/api/v1' + '/profiles', {
+						request.post(config.OnaApi.livebaseUrl + '/profiles', {
 							form: userForm
 						}, function(err, responseona) {
 							// console.log('ERR',err)
@@ -76,10 +76,10 @@ module.exports = (router) => {
 										username: userName
 									};
 
-									request.put('https://api.ona.io/api/v1' + '/projects/30730/share', {
+									request.put(config.OnaApi.livebaseUrl + '/projects/'+config.OnaApi.projectID+'/share', {
 										'auth': {
-											'user': 'testman',
-											'pass': 'cool123'
+											'user': config.OnaApi.credentials.user,
+											'pass': config.OnaApi.credentials.pass
 										},
 										'form': form
 									}, function(err, responseprojectshare) {

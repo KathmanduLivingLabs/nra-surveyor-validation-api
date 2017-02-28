@@ -118,7 +118,7 @@ module.exports = (router) => {
 													})
 													.catch(function(err) {
 														// console.log('NNNI',err)
-														res.status(200).send("Your number is not registered. Please contact KLL.");
+														res.status(200).send("There was an error while creating account");
 													})
 
 												// console.log('responseprojectshare', responseprojectshare)

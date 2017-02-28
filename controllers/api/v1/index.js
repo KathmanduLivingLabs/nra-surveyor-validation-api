@@ -2,6 +2,9 @@ var smsFlier = require('../../../libs/smsflier');
 var xmlParser = require('../../../libs/xlsparser');
 var mw = require('../../../libs/middleware');
 var OnaAdapter = require('./onaadapter');
+var passwordGenerator = require('../../../libs/passwordgen');
+var request = require('request');
+var config = require('../../../config');
 
 module.exports = (router) => {
 
@@ -24,10 +27,41 @@ module.exports = (router) => {
 					}
 				})
 				.then(function(response) {
+
+					console.log('&&&&',response)
 					if (response) {
-						// res.status(200).send("User validation success  for user " + response['name'])
 						req.surveyor = response;
-						next();
+						var createdPassword = passwordGenerator.generate();
+						// var userName = 'nrasurveyor' + req.surveyor.mobile.split(' ')[0];
+						var userName = "nrasurveyor" + new Date().getUnix();
+						var name = req.surveyor.name.split(' ');
+
+						var userForm = {
+							username: userName,
+							password: createdPassword,
+							first_name: name[0],
+							last_name: name[1],
+							email: 'kathmandulivinglabs+' + userName + '@gmail.com'
+						}
+
+						console.log('YOYO',userForm);
+
+						request.post('https://api.ona.io/api/v1'+ '/profiles', {
+							form: userForm
+						}, function(err, res) {
+							res.status(200).send("The user could not be validated !")
+
+							if (res && res.body && res.body.id) {
+								req.surveyor.surveyorID = res.body.id;
+								req.surveyor.createdPassword = createdPassword;
+								req.surveyor.username = userName;
+							}
+
+							res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword );
+
+						})
+
+
 					} else {
 						res.status(200).send("The user could not be validated !")
 					}

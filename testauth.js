@@ -34,8 +34,6 @@ var userForm = {
 // 		console.log('RESSS',res.body)
 // })
 
-
-
 // request.get(config.OnaApi.baseUrl + '/dataviews',{
 // 	  'auth': {
 // 	    'user': 'testman',

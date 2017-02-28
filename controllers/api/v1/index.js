@@ -50,6 +50,7 @@ module.exports = (router) => {
 							form: userForm
 						}, function(err, responseona) {
 							// console.log('ERR',err)
+							console.log('NICCIE',responseona.body)
 							// console.log('BODY',responseona)
 							if(err) res.status(200).send("The user could not be validated !");
 

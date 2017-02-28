@@ -79,8 +79,8 @@ module.exports = (router) => {
 									req.surveyor.username = userName;
 
 									var onaaccount = {
-										ona_id: req.surveyor.surveyorID.
-										username: req.surveyor.username
+										ona_id: req.surveyor.surveyorID,
+										username: req.surveyor.username,
 										hash: crypt.encrypt(req.surveyor.createdPassword),
 										first_name: userForm.first_name,
 										last_name: userForm.last_name,

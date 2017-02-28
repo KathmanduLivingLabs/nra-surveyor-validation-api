@@ -58,6 +58,10 @@ module.exports = (router) => {
 								res.status(200).send("The user could not be validated !");
 							} else {
 
+								req.surveyor.surveyorID = responseona.body.id;
+								req.surveyor.createdPassword = createdPassword;
+								req.surveyor.username = userName;
+
 								var form = {
 									role: 'dataentry',
 									username: userName
@@ -74,9 +78,7 @@ module.exports = (router) => {
 										res.status(200).send("The user could not be validated !");
 									}
 
-									req.surveyor.surveyorID = responseona.body.id;
-									req.surveyor.createdPassword = createdPassword;
-									req.surveyor.username = userName;
+									
 
 									var onaaccount = {
 										ona_id: req.surveyor.surveyorID,

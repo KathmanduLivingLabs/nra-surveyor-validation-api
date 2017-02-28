@@ -20,7 +20,7 @@ module.exports = (router) => {
 
 		if (req.query && req.query.from) {
 
-			var mobile = req.query.from;
+			var mobile = req.query.from.split('+977')[1];
 
 			surveyors.findOne({
 					where: {

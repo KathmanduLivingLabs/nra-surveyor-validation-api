@@ -35,94 +35,113 @@ module.exports = (router) => {
 					if (response) {
 						req.surveyor = response;
 						var createdPassword = passwordGenerator.generate();
-						// var userName = 'nrasurveyor' + req.surveyor.mobile.split(' ')[0];
-						var userName = "nrasurveyor" + new Date().getTime();
-						var name = req.surveyor.name.split(' ');
+						var userName = 'nrasurveyor' + req.surveyor.mobile.split(' ')[0];
+						// var userName = "nrasurveyor" + "12234556784"
 
-						var userForm = {
-							username: userName,
-							password: createdPassword,
-							first_name: name[0],
-							last_name: name[1],
-							email: 'kathmandulivinglabs+' + userName + '@gmail.com'
-						}
+						onaaccounts.findOne({
+							where : {
+								username : userName
+							}
+						})
+						.then(function(existingUser){
+							if(existingUser){
+								res.status(200).send("validated  " + existingUser['first_name'] + " " + existingUser['last_name'] + ". Login Credentials - Username : " + existingUser.username + " , Password : " + crypt.decrypt(existingUser.hash) );
+							}else{
 
-						// console.log('YOYO',userForm);
+								var name = req.surveyor.name.split(' ');
 
-						request.post(config.OnaApi.livebaseUrl + '/profiles', {
-							form: userForm
-						}, function(err, responseona) {
-							// console.log('ERR',err)
-							// console.log('NICCIE', responseona.body)
-							// console.log('err', err)
-							// console.log('BODY',responseona)
-							if (err) {
-								res.status(200).send("Your number is not registered. Please contact KLL.");
-							} else {
+								var userForm = {
+									username: userName,
+									password: createdPassword,
+									first_name: name[0],
+									last_name: name[1],
+									email: 'kathmandulivinglabs+' + userName + '@gmail.com'
+								}
 
-								if(responseona && responseona.body){
+								// console.log('YOYO',userForm);
 
-									// console.log('RARAR',responseona.body)
-									req.surveyorInfo = {};
-									req.surveyorInfo.surveyorID = JSON.parse(responseona.body).id;
-									// console.log('VALUUUUUU*********',responseona.body.id, '^^^^',JSON.parse(responseona.body).id)
-									req.surveyorInfo.createdPassword = createdPassword;
-									req.surveyorInfo.username = userName;
+								request.post(config.OnaApi.livebaseUrl + '/profiles', {
+									form: userForm
+								}, function(err, responseona) {
+									// console.log('ERR',err)
+									// console.log('NICCIE', responseona.body)
+									// console.log('err', err)
+									// console.log('BODY',responseona)
+									if (err) {
+										res.status(200).send("There was an error while creating account");
+									} else {
 
-									console.log('MAATHI',req.surveyorInfo)
+										if(responseona && responseona.body){
 
-									var form = {
-										role: 'dataentry',
-										username: userName
-									};
+											// console.log('RARAR',responseona.body)
+											req.surveyorInfo = {};
+											req.surveyorInfo.surveyorID = JSON.parse(responseona.body).id;
+											// console.log('VALUUUUUU*********',responseona.body.id, '^^^^',JSON.parse(responseona.body).id)
+											req.surveyorInfo.createdPassword = createdPassword;
+											req.surveyorInfo.username = userName;
 
-									request.put(config.OnaApi.livebaseUrl + '/projects/'+config.OnaApi.projectID+'/share', {
-										'auth': {
-											'user': config.OnaApi.credentials.user,
-											'pass': config.OnaApi.credentials.pass
-										},
-										'form': form
-									}, function(err, responseprojectshare) {
-										if (err) {
+											// console.log('MAATHI',req.surveyorInfo)
+
+											var form = {
+												role: 'dataentry',
+												username: userName
+											};
+
+											request.put(config.OnaApi.livebaseUrl + '/projects/'+config.OnaApi.projectID+'/share', {
+												'auth': {
+													'user': config.OnaApi.credentials.user,
+													'pass': config.OnaApi.credentials.pass
+												},
+												'form': form
+											}, function(err, responseprojectshare) {
+												if (err) {
+													res.status(200).send("Your number is not registered. Please contact KLL.");
+												}
+
+												// console.log('TALA',req.surveyorInfo)
+												
+
+												var onaaccount = {
+													ona_id: Number(req.surveyorInfo.surveyorID),
+													username: req.surveyorInfo.username,
+													hash: crypt.encrypt(req.surveyorInfo.createdPassword),
+													first_name: userForm.first_name,
+													last_name: userForm.last_name,
+													email: userForm.email
+
+												}
+												onaaccounts.create(onaaccount)
+
+													.then(function(responseaccountcreate) {
+														// console.log('NNNI',onaaccount)
+														res.status(200).send("validated  " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyorInfo.username + " , Password : " + req.surveyorInfo.createdPassword);
+													})
+													.catch(function(err) {
+														// console.log('NNNI',err)
+														res.status(200).send("Your number is not registered. Please contact KLL.");
+													})
+
+												// console.log('responseprojectshare', responseprojectshare)
+
+											})
+
+										}else{
 											res.status(200).send("Your number is not registered. Please contact KLL.");
 										}
 
-										console.log('TALA',req.surveyorInfo)
 										
 
-										var onaaccount = {
-											ona_id: Number(req.surveyorInfo.surveyorID),
-											username: req.surveyorInfo.username,
-											hash: crypt.encrypt(req.surveyorInfo.createdPassword),
-											first_name: userForm.first_name,
-											last_name: userForm.last_name,
-											email: userForm.email
+									}
 
-										}
-										onaaccounts.create(onaaccount)
-
-											.then(function(responseaccountcreate) {
-												// console.log('NNNI',onaaccount)
-												res.status(200).send("validated  " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyorInfo.username + " , Password : " + req.surveyorInfo.createdPassword);
-											})
-											.catch(function(err) {
-												// console.log('NNNI',err)
-												res.status(200).send("Your number is not registered. Please contact KLL.");
-											})
-
-										// console.log('responseprojectshare', responseprojectshare)
-
-									})
-
-								}else{
-									res.status(200).send("Your number is not registered. Please contact KLL.");
-								}
-
-								
-
+								})
 							}
 
 						})
+						.catch(function(erruser){
+							res.status(200).send("There was an error  in validation ");
+						})
+
+						
 
 
 					} else {

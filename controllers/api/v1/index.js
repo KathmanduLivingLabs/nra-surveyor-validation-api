@@ -28,7 +28,7 @@ module.exports = (router) => {
 				})
 				.then(function(response) {
 
-					console.log('&&&&',response)
+					// console.log('&&&&',response)
 					if (response) {
 						req.surveyor = response;
 						var createdPassword = passwordGenerator.generate();
@@ -44,17 +44,17 @@ module.exports = (router) => {
 							email: 'kathmandulivinglabs+' + userName + '@gmail.com'
 						}
 
-						console.log('YOYO',userForm);
+						// console.log('YOYO',userForm);
 
 						request.post('https://api.ona.io/api/v1'+ '/profiles', {
 							form: userForm
 						}, function(err, responseona) {
-							console.log('ERR',err)
-							console.log('BODY',responseona)
+							// console.log('ERR',err)
+							// console.log('BODY',responseona)
 							if(err) res.status(200).send("The user could not be validated !");
 
 							if (responseona && responseona.body && responseona.body.id) {
-								console.log('FINNEE')
+								console.log('FINNEE',responseona.body)
 								req.surveyor.surveyorID = responseona.body.id;
 								req.surveyor.createdPassword = createdPassword;
 								req.surveyor.username = userName;

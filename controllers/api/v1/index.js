@@ -82,51 +82,63 @@ module.exports = (router) => {
 
 											console.log('MAATHI',req.surveyorInfo)
 
-											var form = {
-												role: 'dataentry',
-												username: userName
-											};
 
-											request.put(config.OnaApi.livebaseUrl + '/projects/'+config.OnaApi.projectID+'/share', {
-												'auth': {
-													'user': config.OnaApi.credentials.user,
-													'pass': config.OnaApi.credentials.pass
-												},
-												'form': form
-											}, function(err, responseprojectshare) {
-												if (err) {
-													res.status(200).send("Your number is not registered. Please contact KLL.");
-												}
+											var onaaccount = {
+												ona_id: Number(req.surveyorInfo.surveyorID),
+												username: req.surveyorInfo.username,
+												hash: crypt.encrypt(req.surveyorInfo.createdPassword),
+												first_name: userForm.first_name,
+												last_name: userForm.last_name,
+												email: userForm.email
 
-												// console.log('TALA',req.surveyorInfo)
-												
+											}
+											
+											onaaccounts.create(onaaccount)
 
-												var onaaccount = {
-													ona_id: Number(req.surveyorInfo.surveyorID),
-													username: req.surveyorInfo.username,
-													hash: crypt.encrypt(req.surveyorInfo.createdPassword),
-													first_name: userForm.first_name,
-													last_name: userForm.last_name,
-													email: userForm.email
+												.then(function(responseaccountcreate) {
 
-												}
-												onaaccounts.create(onaaccount)
+													if(responseaccountcreate){
 
-													.then(function(responseaccountcreate) {
-														// console.log('NNNI',onaaccount)
-														res.status(200).send("validated  " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyorInfo.username + " , Password : " + req.surveyorInfo.createdPassword);
-													})
-													.catch(function(err) {
-														// console.log('NNNI',err)
-														res.status(200).send("There was an error while creating account");
-													})
+														var form = {
+															role: 'dataentry',
+															username: userName
+														}
 
-												// console.log('responseprojectshare', responseprojectshare)
+														request.put(config.OnaApi.livebaseUrl + '/projects/'+config.OnaApi.projectID+'/share', {
+															'auth': {
+																'user': config.OnaApi.credentials.user,
+																'pass': config.OnaApi.credentials.pass
+															},
+															'form': form
+														}, function(err, responseprojectshare) {
+															if (err) {
+																res.status(200).send("There was an error while assigning form");
+															}else{
 
-											})
+																res.status(200).send("validated  " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyorInfo.username + " , Password : " + req.surveyorInfo.createdPassword);
+
+															}
+
+															
+
+														})
+
+													}else{
+														res.status(200).send("There was an error while creating db account");
+													}
+													
+													
+
+													
+												})
+												.catch(function(err) {
+													// console.log('NNNI',err)
+													res.status(200).send("There was an error while creating db account");
+												})
+
 
 										}else{
-											res.status(200).send("Your number is not registered. Please contact KLL.");
+											res.status(200).send("There was an error while creating account");
 										}
 
 										

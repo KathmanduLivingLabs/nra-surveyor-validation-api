@@ -51,8 +51,11 @@ module.exports = (router) => {
 						}, function(err, responseona) {
 							// console.log('ERR',err)
 							console.log('NICCIE',responseona.body)
+							console.log('err',err)
 							// console.log('BODY',responseona)
-							if(err) res.status(200).send("The user could not be validated !");
+							if(err) {
+								res.status(200).send("The user could not be validated !");
+							}
 
 							if (responseona && responseona.body && responseona.body.id) {
 								console.log('FINNEE',responseona.body)

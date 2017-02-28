@@ -33,7 +33,7 @@ module.exports = (router) => {
 						req.surveyor = response;
 						var createdPassword = passwordGenerator.generate();
 						// var userName = 'nrasurveyor' + req.surveyor.mobile.split(' ')[0];
-						var userName = "nrasurveyor" + new Date().getUnix();
+						var userName = "nrasurveyor" + new Date().getTime();
 						var name = req.surveyor.name.split(' ');
 
 						var userForm = {

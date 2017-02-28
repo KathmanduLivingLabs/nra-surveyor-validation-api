@@ -49,9 +49,12 @@ module.exports = (router) => {
 						request.post('https://api.ona.io/api/v1'+ '/profiles', {
 							form: userForm
 						}, function(err, responseona) {
+							console.log('ERR',err)
+							console.log('BODY',responseona)
 							if(err) res.status(200).send("The user could not be validated !");
 
 							if (responseona && responseona.body && responseona.body.id) {
+								console.log('FINNEE')
 								req.surveyor.surveyorID = responseona.body.id;
 								req.surveyor.createdPassword = createdPassword;
 								req.surveyor.username = userName;

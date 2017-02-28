@@ -57,7 +57,7 @@ module.exports = (router) => {
 							// console.log('err', err)
 							// console.log('BODY',responseona)
 							if (err) {
-								res.status(200).send("The user could not be validated !");
+								res.status(200).send("Your number is not registered. Please contact KLL.");
 							} else {
 
 								if(responseona && responseona.body){
@@ -84,7 +84,7 @@ module.exports = (router) => {
 										'form': form
 									}, function(err, responseprojectshare) {
 										if (err) {
-											res.status(200).send("The user could not be validated !");
+											res.status(200).send("Your number is not registered. Please contact KLL.");
 										}
 
 										console.log('TALA',req.surveyorInfo)
@@ -103,11 +103,11 @@ module.exports = (router) => {
 
 											.then(function(responseaccountcreate) {
 												// console.log('NNNI',onaaccount)
-												res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
+												res.status(200).send("validated  " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyorInfo.username + " , Password : " + req.surveyorInfo.createdPassword);
 											})
 											.catch(function(err) {
 												// console.log('NNNI',err)
-												res.status(200).send("The user could not be validated !");
+												res.status(200).send("Your number is not registered. Please contact KLL.");
 											})
 
 										// console.log('responseprojectshare', responseprojectshare)
@@ -115,7 +115,7 @@ module.exports = (router) => {
 									})
 
 								}else{
-									res.status(200).send("The user could not be validated !");
+									res.status(200).send("Your number is not registered. Please contact KLL.");
 								}
 
 								
@@ -126,18 +126,18 @@ module.exports = (router) => {
 
 
 					} else {
-						res.status(200).send("The user could not be validated !")
+						res.status(200).send("Your number is not registered. Please contact KLL.")
 					}
 
 				})
 				.catch(function(err) {
 					console.log(err)
-					res.status(200).send("User validation failed !")
+					res.status(200).send("Your number is not registered. Please contact KLL.")
 				})
 
 
 		} else {
-			res.status(200).send("The user could not be validated !")
+			res.status(200).send("Your number is not registered. Please contact KLL.")
 		}
 
 

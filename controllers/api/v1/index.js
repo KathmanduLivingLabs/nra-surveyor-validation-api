@@ -46,28 +46,47 @@ module.exports = (router) => {
 
 						// console.log('YOYO',userForm);
 
-						request.post('https://api.ona.io/api/v1'+ '/profiles', {
+						request.post('https://api.ona.io/api/v1' + '/profiles', {
 							form: userForm
 						}, function(err, responseona) {
 							// console.log('ERR',err)
-							console.log('NICCIE',responseona.body)
-							console.log('err',err)
-							// console.log('BODY',responseona)
-							if(err) {
+							// console.log('NICCIE', responseona.body)
+							// console.log('err', err)
+								// console.log('BODY',responseona)
+							if (err) {
 								res.status(200).send("The user could not be validated !");
-							}else{
+							} else {
 
-								req.surveyor.surveyorID = responseona.body.id;
-								req.surveyor.createdPassword = createdPassword;
-								req.surveyor.username = userName;
+								var form = {
+									role : 'dataentry',
+									username : userName
+								};
 
-								res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword );
+								request.put('https://api.ona.io/api/v1' + '/projects/30730/share',{
+								  'auth': {
+								    'user': 'testman',
+								    'pass': 'cool123'
+								  },
+								  'form' : form
+								},function(err,responseprojectshare){
+									if (err) {
+										res.status(200).send("The user could not be validated !");
+									}
+
+									console.log('responseprojectshare',responseprojectshare)
+
+									req.surveyor.surveyorID = responseona.body.id;
+									req.surveyor.createdPassword = createdPassword;
+									req.surveyor.username = userName;
+
+									res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
+								})
+
+								
 
 							}
 
-							
 
-							
 
 						})
 
@@ -106,9 +125,9 @@ module.exports = (router) => {
 		// smsFlier.send(numbers,'For login');
 
 
-	},OnaAdapter.createUser,function(req,res,next){
+	}, OnaAdapter.createUser, function(req, res, next) {
 
-		res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword );
+		res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
 
 
 

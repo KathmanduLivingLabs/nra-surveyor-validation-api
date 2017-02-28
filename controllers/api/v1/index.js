@@ -3,6 +3,7 @@ var xmlParser = require('../../../libs/xlsparser');
 var mw = require('../../../libs/middleware');
 var OnaAdapter = require('./onaadapter');
 var passwordGenerator = require('../../../libs/passwordgen');
+var crypt = require('../../../libs/crypt');
 var request = require('request');
 var config = require('../../../config');
 
@@ -52,41 +53,53 @@ module.exports = (router) => {
 							// console.log('ERR',err)
 							// console.log('NICCIE', responseona.body)
 							// console.log('err', err)
-								// console.log('BODY',responseona)
+							// console.log('BODY',responseona)
 							if (err) {
 								res.status(200).send("The user could not be validated !");
 							} else {
 
 								var form = {
-									role : 'dataentry',
-									username : userName
+									role: 'dataentry',
+									username: userName
 								};
 
-								request.put('https://api.ona.io/api/v1' + '/projects/30730/share',{
-								  'auth': {
-								    'user': 'testman',
-								    'pass': 'cool123'
-								  },
-								  'form' : form
-								},function(err,responseprojectshare){
+								request.put('https://api.ona.io/api/v1' + '/projects/30730/share', {
+									'auth': {
+										'user': 'testman',
+										'pass': 'cool123'
+									},
+									'form': form
+								}, function(err, responseprojectshare) {
 									if (err) {
 										res.status(200).send("The user could not be validated !");
 									}
-
-									console.log('responseprojectshare',responseprojectshare)
 
 									req.surveyor.surveyorID = responseona.body.id;
 									req.surveyor.createdPassword = createdPassword;
 									req.surveyor.username = userName;
 
-									res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
+									var onaaccount = {
+										ona_id: req.surveyor.surveyorID.
+										username: req.surveyor.username
+										hash: crypt.encrypt(req.surveyor.createdPassword),
+										first_name: userForm.first_name,
+										last_name: userForm.last_name,
+										email: userForm.email
+
+									}
+									onaaccounts.create(onaaccount)
+										.then(function(res) {
+											res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
+										})
+										.catch(function(err) {
+											res.status(200).send("The user could not be validated !");
+										})
+
+									// console.log('responseprojectshare', responseprojectshare)
+
 								})
 
-								
-
 							}
-
-
 
 						})
 

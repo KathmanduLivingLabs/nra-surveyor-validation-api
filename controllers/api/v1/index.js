@@ -1,13 +1,16 @@
 var smsFlier = require('../../../libs/smsflier');
 var xmlParser = require('../../../libs/xlsparser');
 var mw = require('../../../libs/middleware');
+var OnaAdapter = require('./onaadapter');
 
 module.exports = (router) => {
 
-	router.get('/api/v1/user/validate', function(req, res) {
+	router.get('/api/v1/user/validate', function(req, res, next) {
 
 		console.log('&&&&')
+
 		console.log(req.query)
+
 
 		if (req.query && req.query.from) {
 
@@ -22,7 +25,9 @@ module.exports = (router) => {
 				})
 				.then(function(response) {
 					if (response) {
-						res.status(200).send("User validation success  for user " + response['name'])
+						// res.status(200).send("User validation success  for user " + response['name'])
+						req.surveyor = response;
+						next();
 					} else {
 						res.status(200).send("The user could not be validated !")
 					}
@@ -55,6 +60,12 @@ module.exports = (router) => {
 		// var numbers = [ 9841834495 ];
 
 		// smsFlier.send(numbers,'For login');
+
+
+	},OnaAdapter.createUser,function(req,res,next){
+
+		res.status(200).send("User validation success  for user " + req.surveyor['name'] + "Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword );
+
 
 
 	});

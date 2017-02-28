@@ -15,10 +15,12 @@ module.exports = (router) => {
 
 		console.log(req.query)
 
+		// req.query.from = "9841834495";
+
 
 		if (req.query && req.query.from) {
 
-			var mobile = req.query.from.split('+977')[1];
+			var mobile = req.query.from;
 
 			surveyors.findOne({
 					where: {
@@ -58,48 +60,65 @@ module.exports = (router) => {
 								res.status(200).send("The user could not be validated !");
 							} else {
 
-								req.surveyor.surveyorID = responseona.body.id;
-								req.surveyor.createdPassword = createdPassword;
-								req.surveyor.username = userName;
+								if(responseona && responseona.body){
 
-								var form = {
-									role: 'dataentry',
-									username: userName
-								};
+									// console.log('RARAR',responseona.body)
+									req.surveyorInfo = {};
+									req.surveyorInfo.surveyorID = JSON.parse(responseona.body).id;
+									// console.log('VALUUUUUU*********',responseona.body.id, '^^^^',JSON.parse(responseona.body).id)
+									req.surveyorInfo.createdPassword = createdPassword;
+									req.surveyorInfo.username = userName;
 
-								request.put('https://api.ona.io/api/v1' + '/projects/30730/share', {
-									'auth': {
-										'user': 'testman',
-										'pass': 'cool123'
-									},
-									'form': form
-								}, function(err, responseprojectshare) {
-									if (err) {
-										res.status(200).send("The user could not be validated !");
-									}
+									// console.log('MAATHI',req.surveyor)
 
-									
+									var form = {
+										role: 'dataentry',
+										username: userName
+									};
 
-									var onaaccount = {
-										ona_id: req.surveyor.surveyorID,
-										username: req.surveyor.username,
-										hash: crypt.encrypt(req.surveyor.createdPassword),
-										first_name: userForm.first_name,
-										last_name: userForm.last_name,
-										email: userForm.email
-
-									}
-									onaaccounts.create(onaaccount)
-										.then(function(res) {
-											res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
-										})
-										.catch(function(err) {
+									request.put('https://api.ona.io/api/v1' + '/projects/30730/share', {
+										'auth': {
+											'user': 'testman',
+											'pass': 'cool123'
+										},
+										'form': form
+									}, function(err, responseprojectshare) {
+										if (err) {
 											res.status(200).send("The user could not be validated !");
-										})
+										}
 
-									// console.log('responseprojectshare', responseprojectshare)
+										console.log('TALA',req.surveyorInfo)
+										
 
-								})
+										var onaaccount = {
+											ona_id: Number(req.surveyorInfo.surveyorID),
+											username: req.surveyorInfo.username,
+											hash: crypt.encrypt(req.surveyorInfo.createdPassword),
+											first_name: userForm.first_name,
+											last_name: userForm.last_name,
+											email: userForm.email
+
+										}
+										onaaccounts.create(onaaccount)
+
+											.then(function(responseaccountcreate) {
+												// console.log('NNNI',onaaccount)
+												res.status(200).send("User validation success  for user " + req.surveyor['name'] + ". Login Credentials - Username : " + req.surveyor.username + " , Password : " + req.surveyor.createdPassword);
+											})
+											.catch(function(err) {
+												// console.log('NNNI',err)
+												res.status(200).send("The user could not be validated !");
+											})
+
+										// console.log('responseprojectshare', responseprojectshare)
+
+									})
+
+								}else{
+									res.status(200).send("The user could not be validated !");
+								}
+
+								
 
 							}
 

@@ -21,6 +21,8 @@ module.exports = (router) => {
 		if (req.query && req.query.from) {
 
 			var mobile = req.query.from.split('+977')[1];
+			var imei = req.query.text ? req.query.text.split(' ')[1] : ' ' ;
+			console.log('IMEI',imei);
 
 			surveyors.findOne({
 					where: {
@@ -89,7 +91,8 @@ module.exports = (router) => {
 												hash: crypt.encrypt(req.surveyorInfo.createdPassword),
 												first_name: userForm.first_name,
 												last_name: userForm.last_name,
-												email: userForm.email
+												email: userForm.email,
+												imei : imei
 
 											}
 											

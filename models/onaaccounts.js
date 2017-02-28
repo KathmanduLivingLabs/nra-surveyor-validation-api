@@ -27,6 +27,10 @@ module.exports = function(sequelize,DataTypes){
         email : {
             type : DataTypes.STRING,
             allowNull : true
+        },
+        imei : {
+            type : DataTypes.STRING,
+            allowNull : true
         }
 
     });

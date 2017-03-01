@@ -42,7 +42,7 @@ module.exports = (router) => {
 					if (response) {
 						req.surveyor = response;
 						var createdPassword = passwordGenerator.generate();
-						var userName = 'nrasurveyor' + req.surveyor.mobile.split(' ')[0];
+						var userName = 'nra' + req.surveyor.mobile.split(' ')[0];
 						// var userName = "nrasurveyor" + "12234556784"
 
 						onaaccounts.findOne({

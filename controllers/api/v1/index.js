@@ -21,6 +21,11 @@ module.exports = (router) => {
 		if (req.query && req.query.from) {
 
 			var mobile = req.query.from.split('+977')[1];
+
+			if(!mobile || mobile.length<10){
+				return res.status(200).send("Mobile number is not valid");
+			}
+
 			var imei = req.query.text ? req.query.text.split(' ')[1] : ' ' ;
 			console.log('IMEI',imei);
 

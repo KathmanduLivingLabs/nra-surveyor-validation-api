@@ -243,6 +243,46 @@ module.exports = (router) => {
 
 	})
 
+
+	router.post('/api/v1/surveyor/update', function(req, res) {
+
+		var number = req.body.number;
+		var localdbId = req.body.localdbId;
+
+		if(!number || !localdbId){
+			return res.json({
+					success: 0,
+					message : 'No localdbId or number provided'
+				})
+		}else{
+			surveyors.update({
+				mobile : number
+			},{
+				where : {
+					id : localdbId
+				}
+			})
+			.then(function(updateresponse){
+				console.log(updateresponse)
+				if(updateresponse){
+					res.json({
+						success: 1,
+						message : updateresponse
+					})
+				}
+			})
+			.catch(function(err){
+				res.json({
+					error: err
+				})
+			})
+		}
+
+		
+
+	})
+
+
 }
 
 

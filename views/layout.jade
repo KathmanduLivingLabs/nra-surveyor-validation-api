@@ -1,7 +1,13 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+	head
+		title NRA 
+		link(rel='stylesheet', href='/stylesheets/style.css')
+
+		script(src="/javascripts/external/angular.min.js")
+		script(src="/javascripts/external/angular-ui-router.min.js")
+		script(src="/javascripts/app.js")
+		script(src="/javascripts/routes.js")
+	body(ng-app="nraAdmin")
+		block content
+			ui-view

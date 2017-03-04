@@ -1,0 +1,23 @@
+table
+	tr
+		td  Local DB ID
+		td  Name
+		td  Mobile
+		td  Address
+		td  Program
+		td  College
+		td  Survey district
+		td  Actions
+	
+	tr(ng-repeat="list in surveyorsList track by $index")
+		td {{list.id}}
+		td {{list.name}}
+		td {{list.mobile}}
+		td {{list.address}}
+		td {{list.program}}
+		td {{list.crn}}
+		td {{list.district}}
+		td 
+			button(type="button" ng-click="editNumber(list)")
+				span Edit Number
+

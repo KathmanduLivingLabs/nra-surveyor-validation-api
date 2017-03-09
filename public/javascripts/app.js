@@ -71,5 +71,64 @@ angular.module('nraAdmin',appDependencies)
 			})
 	}
 
+
+
 	
+})
+
+.controller('registrationController',function($scope,$window,$state,$http){
+
+	if($window.localStorage.nraToken){
+
+		$http.get('/api/v1/onaaccounts/list',{
+			headers : {
+				'Authorization' : 'Auth ' + $window.localStorage.nraToken
+			}
+		}).
+		then(function(response){
+			console.log(response)
+			if(response.data.success){
+				$scope.surveyorOnaAccounts = response.data.surveyors;
+			}
+			
+		})
+		.catch(function(err){
+			alert(JSON.stringify(err));
+		})
+
+
+	}else{
+		alert('Token Not Found !');
+		$state.go('login');
+	}
+
+
+	$scope.registerOna = function(onaaccount){
+
+		var createOptions = {
+
+			username : onaaccount.username,
+			first_name : onaaccount.first_name,
+			last_name : onaaccount.last_name,
+			email : onaaccount.email,
+			password : onaaccount.hash
+
+		}
+
+		$http
+			.post('/api/v1/onaaccounts/surveyor/create/server',createOptions,{
+			headers : {
+				'Authorization' : 'Auth ' + $window.localStorage.nraToken
+			}
+		})
+			.then(function(updateresponse){
+				alert(JSON.stringify(updateresponse));
+
+			})
+			.catch(function(err){
+				alert(JSON.stringify(err));
+			})
+
+	}
+
 })

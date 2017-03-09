@@ -283,6 +283,156 @@ module.exports = (router) => {
 	})
 
 
+	router.get('/api/v1/surveyors/list', function(req, res) {
+
+		var authorizationHeader = req.headers.authorization.split(' ')[1];
+
+		if(authorizationHeader && authorizationHeader === config.authorizationHeader){
+
+			surveyors.findAll()
+			.then(function(surveyorsList){
+				res.json({
+					success: 1,
+					surveyors : surveyorsList
+				})
+			})
+			.catch(function(err){
+				res.json({
+					error: err
+				})
+			})
+
+
+		}else{
+			return res.json({
+				error: 'No authorization header present'
+			})
+		}
+
+	})
+	
+
+	router.get('/api/v1/onaaccounts/list', function(req, res) {
+
+		var authorizationHeader = req.headers.authorization.split(' ')[1];
+
+		if(authorizationHeader && authorizationHeader === config.authorizationHeader){
+
+			onaaccounts.findAll()
+			.then(function(onaAccountList){
+				onaAccountList.forEach(function(onaaccount){
+					onaaccount.hash = crypt.decrypt(onaaccount.hash);
+				})
+				res.json({
+					success: 1,
+					surveyors : onaAccountList
+				})
+			})
+			.catch(function(err){
+				res.json({
+					error: err
+				})
+			})
+
+		}else{
+
+			return res.json({
+				error: 'No authorization header present'
+			})
+
+		}
+
+	})
+
+
+	router.post('/api/v1/onaaccounts/surveyor/create/server',function(req,res){
+
+		
+
+		var authorizationHeader = req.headers.authorization.split(' ')[1];
+
+		if(authorizationHeader && authorizationHeader === config.authorizationHeader){
+
+			var userForm = {
+				username: req.body.username,
+				password: req.body.password,
+				first_name: req.body.first_name,
+				last_name: req.body.last_name,
+				email: req.body.email
+			};
+
+			request.post(config.nraOna.url + '/profiles', {
+				form: userForm
+			}, function(err, responseona) {
+
+				if (err) {
+					return res.json({
+						success: 0,
+						error: 'Error creating account NRA Ona Core'
+					})
+				} else {
+
+					if (responseona && responseona.body) {
+
+						var form = {
+							role: 'dataentry',
+							username: req.body.username
+						}
+
+						request.put(config.nraOna.url + '/projects/' + config.nraOna.projectID + '/share', {
+							'auth': {
+								'user': config.nraOna.credentials.user,
+								'pass': config.nraOna.credentials.pass
+							},
+							'form': form
+						}, function(err, responseprojectshare) {
+							if (err) {
+								return res.json({
+									success: 0,
+									error: 'Error assigning to project '
+								})
+							} else {
+
+								return res.json({
+									success: 1,
+									message: 'Successfully created account in NRA Ona Core'
+								})
+
+							}
+
+
+
+						})
+
+
+
+					} else {
+						return res.json({
+							success: 0,
+							error: 'Error creating account in NRA Ona Core '
+						})
+					}
+
+
+
+				}
+
+			})
+
+			
+
+		}else{
+
+			return res.json({
+				error: 'No authorization header present'
+			})
+
+		}
+
+
+	})
+
+
 }
 
 

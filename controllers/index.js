@@ -22,6 +22,9 @@ module.exports = (router)=>{
 	       case 'home' :
 	           res.render('home');
 	           break;
+	       case 'register' :
+	           res.render('register');
+	           break;
 	       default :
 
 	   }

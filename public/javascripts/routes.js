@@ -22,6 +22,11 @@ routes.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$ur
                 authenticated : null
             }
         })
+        .state('register',{
+            url : '/register',
+            templateUrl : '/template/register',
+            controller : 'registrationController'
+        })
 
 
 }]);

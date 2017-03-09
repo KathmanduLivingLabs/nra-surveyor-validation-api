@@ -1,0 +1,22 @@
+table
+	tr
+		td  Ona ID
+		td  First Name
+		td  Last Name
+		td  Email
+		td  Username
+		td  Hash
+		td  Actions
+	
+	tr(ng-repeat="list in surveyorOnaAccounts track by $index")
+		td {{list.ona_id}} 
+		td {{list.first_name}} 
+		td {{list.last_name}} 
+		td {{list.email}} 
+		td {{list.username}} 
+		td {{list.hash}} 
+		td {{list.district}}
+		td 
+			button(type="button" ng-click="registerOna(list)")
+				span Register in NRA Ona Core
+
